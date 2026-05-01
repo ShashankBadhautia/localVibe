@@ -1,29 +1,25 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import { cartService } from '../services/cartService';
+import { ProductContext } from './ProductContext';
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
+  const { products } = useContext(ProductContext) || { products: [] };
 
   useEffect(() => {
     setCartItems(cartService.getCart());
   }, []);
 
-  const addToCart = (product, quantity = 1) => {
+  const addToCart = (productId, quantity = 1) => {
     const newCart = [...cartItems];
-    const existingIndex = newCart.findIndex(item => item.productId === product.id);
+    const existingIndex = newCart.findIndex(item => item.productId === productId);
     
     if (existingIndex >= 0) {
       newCart[existingIndex].quantity += quantity;
     } else {
-      newCart.push({
-        productId: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.image,
-        quantity
-      });
+      newCart.push({ productId, quantity });
     }
     
     setCartItems(newCart);
@@ -51,7 +47,15 @@ export const CartProvider = ({ children }) => {
     cartService.clearCart();
   };
 
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  // Helper to get full details for cart UI
+  const getCartDetails = () => {
+    return cartItems.map(item => {
+      const product = products.find(p => p.id === item.productId) || {};
+      return { ...product, ...item };
+    });
+  };
+
+  const subtotal = getCartDetails().reduce((sum, item) => sum + ((item.price || 0) * item.quantity), 0);
 
   return (
     <CartContext.Provider value={{ 
@@ -60,6 +64,7 @@ export const CartProvider = ({ children }) => {
       removeFromCart, 
       updateQuantity, 
       clearCart,
+      getCartDetails,
       subtotal
     }}>
       {children}

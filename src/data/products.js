@@ -9,7 +9,9 @@ export const initialProducts = [
     rating: 4.8,
     stock: 12,
     description: "A handmade ceramic mug crafted by local artisans.",
-    reviews: []
+    reviews: [
+      { user: "Ayesha", rating: 5, comment: "Beautiful!" }
+    ]
   },
   {
     id: 2,
@@ -21,7 +23,9 @@ export const initialProducts = [
     rating: 4.9,
     stock: 25,
     description: "Pure, raw organic honey sourced from local farms.",
-    reviews: []
+    reviews: [
+      { user: "John", rating: 5, comment: "Tastes amazing!" }
+    ]
   },
   {
     id: 3,

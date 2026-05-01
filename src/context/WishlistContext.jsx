@@ -10,22 +10,22 @@ export const WishlistProvider = ({ children }) => {
     setWishlistItems(wishlistService.getWishlist());
   }, []);
 
-  const addToWishlist = (product) => {
-    if (!wishlistItems.find(item => item.id === product.id)) {
-      const newWishlist = [...wishlistItems, product];
+  const addToWishlist = (productId) => {
+    if (!wishlistItems.includes(productId)) {
+      const newWishlist = [...wishlistItems, productId];
       setWishlistItems(newWishlist);
       wishlistService.saveWishlist(newWishlist);
     }
   };
 
   const removeFromWishlist = (productId) => {
-    const newWishlist = wishlistItems.filter(item => item.id !== productId);
+    const newWishlist = wishlistItems.filter(id => id !== productId);
     setWishlistItems(newWishlist);
     wishlistService.saveWishlist(newWishlist);
   };
 
   const isInWishlist = (productId) => {
-    return !!wishlistItems.find(item => item.id === productId);
+    return wishlistItems.includes(productId);
   };
 
   return (
